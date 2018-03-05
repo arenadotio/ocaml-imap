@@ -2011,9 +2011,6 @@ let unconsumed_to_string {A.buf; off; len} =
   done;
   Bytes.unsafe_to_string b
 
-let parse p =
-  Angstrom.Buffered.parse p
-
 let recv imap =
   let rec loop = function
     | A.Partial f ->
@@ -2032,7 +2029,7 @@ let recv imap =
         Lwt_io.eprintlf "** Unconsumed: %S" (unconsumed_to_string unconsumed) >>= fun () ->
         Lwt.fail (Error (Decode_error (unconsumed_to_string unconsumed, backtrace, f)))
   in
-  loop (parse Decoder.response)
+  loop (Angstrom.Buffered.parse Decoder.response)
 
 let rec send imap r process res =
   match r with
